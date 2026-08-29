@@ -1,0 +1,22 @@
+### Create a new device
+POST http://localhost:8080/devices
+Content-Type: application/json
+
+{
+  "id": "D004",
+  "name": "Camera-01",
+  "type": "CAMERA",
+  "slice": "eMBB",
+  "bandwidth": 30
+}
+
+### Update a device
+PUT http://localhost:8080/devices/D004
+Content-Type: application/json
+
+{
+  "name": "Camera-Updated",
+  "type": "CAMERA",
+  "slice": "eMBB",
+  "bandwidth": 50
+}
