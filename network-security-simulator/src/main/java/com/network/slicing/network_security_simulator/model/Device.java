@@ -11,6 +11,7 @@ import jakarta.validation.constraints.Pattern;
 
 @Entity
 @Table(name = "devices")
+//class = blueprint
 public class Device {
 
     @Id
@@ -31,6 +32,11 @@ public class Device {
     @Max(value = 1000, message = "Bandwidth cannot exceed 1000 Mbps")
     private int bandwidth;
 
+    @Column(name = "ip_address")
+    @Pattern(regexp = "^$|^(?:(?:25[0-5]|2[0-4]\\d|1?\\d?\\d)\\.){3}(?:25[0-5]|2[0-4]\\d|1?\\d?\\d)$|^::1$",
+            message = "IP address must be IPv4 or ::1")
+    private String ipAddress;
+
     public Device() {
     }
 
@@ -40,6 +46,11 @@ public class Device {
         this.type = type;
         this.slice = slice;
         this.bandwidth = bandwidth;
+    }
+
+    public Device(String id, String name, String type, String slice, int bandwidth, String ipAddress) {
+        this(id, name, type, slice, bandwidth);
+        this.ipAddress = ipAddress;
     }
 
     public String getId() {
@@ -72,4 +83,8 @@ public class Device {
     }
 
     public void setBandwidth(int bandwidth) { this.bandwidth = bandwidth; }
+
+    public String getIpAddress() { return ipAddress; }
+
+    public void setIpAddress(String ipAddress) { this.ipAddress = ipAddress; }
 }

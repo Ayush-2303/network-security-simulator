@@ -12,6 +12,7 @@ public class AnomalyResult {
     private double latencyMs;
     private int packetCount;
 
+    public AnomalyResult() {};
     public AnomalyResult(
             String deviceId,
             String deviceName,

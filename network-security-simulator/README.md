@@ -23,6 +23,25 @@ Open `http://localhost:8080`. Hibernate creates `blocked_devices` and `security_
 - `POST /attack/{deviceId}` and `POST /security/respond/{deviceId}`
 - `GET /security/blocked`, `DELETE /security/blocked/{deviceId}`, `GET /security/events`
 
+## Nmap network scan feature
+
+Install [Nmap](https://nmap.org/download.html) and make sure the `nmap` command is available on your PATH. The dashboard's **Nmap Network Scans** section then lets you scan a configured device.
+
+For a safe classroom demo, this application only permits loopback targets: `127.x.x.x` or `::1`. Add an `ipAddress` field to a device request, for example:
+
+```json
+{
+  "id": "sensor-01",
+  "name": "Temperature Sensor",
+  "type": "IoT Sensor",
+  "slice": "mMTC",
+  "bandwidth": 20,
+  "ipAddress": "127.0.0.1"
+}
+```
+
+Use `POST /network-scans/{deviceId}` to start a scan and `GET /network-scans` to view the latest 20 results. Each result includes detected open services and a basic LOW/MEDIUM/HIGH risk rating.
+
 This is a simulator, not a production security control plane. Put it behind authentication and TLS before exposing it to a network.
 
 When `APP_API_KEY` is set, send it as `X-API-Key` for all state-changing API calls. The built-in dashboard is intended for a local demo; use a reverse proxy/identity provider for real user authentication.

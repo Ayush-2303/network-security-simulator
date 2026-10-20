@@ -340,6 +340,7 @@
                 <th>Type</th>
                 <th>Slice</th>
                 <th>Bandwidth</th>
+                <th>IP Address</th>
 
             </tr>
 
@@ -430,6 +431,19 @@
         </table>
     </div>
 
+    <div class="section">
+        <h2>Nmap Network Scans</h2>
+        <p>Scans only loopback targets (127.x.x.x or ::1) configured on a device. Install Nmap before use.</p>
+        <table>
+            <thead><tr><th>Device</th><th>IP</th><th>Scan</th></tr></thead>
+            <tbody id="scanControls"></tbody>
+        </table>
+        <table style="margin-top: 20px">
+            <thead><tr><th>Time</th><th>Device</th><th>Target</th><th>Status</th><th>Risk</th><th>Open services</th></tr></thead>
+            <tbody id="scanHistory"></tbody>
+        </table>
+    </div>
+
 </div>
 
 
@@ -469,6 +483,8 @@
 
             const eventsResponse = await fetch("/security/events");
             const events = await eventsResponse.json();
+            const scansResponse = await fetch("/network-scans");
+            const scans = await scansResponse.json();
             const blockedIds = blocked.map(item => item.deviceId);
 
 
@@ -523,6 +539,8 @@
                         <td>${device.slice}</td>
 
                         <td>${device.bandwidth} Mbps</td>
+
+                        <td>${device.ipAddress || "Not set"}</td>
 
                     </tr>
 
@@ -742,6 +760,18 @@
                 eventTable.innerHTML += `<tr><td>${new Date(event.createdAt).toLocaleString()}</td><td>${event.deviceId}</td><td>${event.action}</td><td>${event.severity}</td><td>${event.reason}</td><td>${unblock}</td></tr>`;
             });
 
+            const scanControls = document.getElementById("scanControls");
+            scanControls.innerHTML = "";
+            devices.forEach(device => {
+                const ready = device.ipAddress && (device.ipAddress.startsWith("127.") || device.ipAddress === "::1");
+                scanControls.innerHTML += `<tr><td>${device.id} - ${device.name}</td><td>${device.ipAddress || "Set a loopback IP"}</td><td><button class="respond-button" onclick="scanDevice('${device.id}')" ${ready ? "" : "disabled"}>Scan with Nmap</button></td></tr>`;
+            });
+            const scanHistory = document.getElementById("scanHistory");
+            scanHistory.innerHTML = "";
+            scans.forEach(scan => {
+                scanHistory.innerHTML += `<tr><td>${new Date(scan.scannedAt).toLocaleString()}</td><td>${scan.deviceId}</td><td>${scan.targetIp}</td><td>${scan.status}</td><td>${scan.riskLevel}</td><td>${scan.summary}</td></tr>`;
+            });
+
         } catch (error) {
 
             console.error(
@@ -879,6 +909,19 @@
             const response = await fetch("/security/blocked/" + deviceId, authorizedOptions("DELETE"));
             if (!response.ok) throw new Error("Unable to unblock device");
             showMessage("Device " + deviceId + " unblocked.", false);
+            await loadDashboard();
+        } catch (error) {
+            showMessage("Error: " + error.message, true);
+        }
+    }
+
+    async function scanDevice(deviceId) {
+        showMessage("Running safe Nmap scan for " + deviceId + "...", false);
+        try {
+            const response = await fetch("/network-scans/" + deviceId, authorizedOptions("POST"));
+            const result = await response.json();
+            if (!response.ok) throw new Error(result.error || "Nmap scan failed");
+            showMessage("Nmap " + result.status + ": " + result.summary, result.status !== "COMPLETED");
             await loadDashboard();
         } catch (error) {
             showMessage("Error: " + error.message, true);

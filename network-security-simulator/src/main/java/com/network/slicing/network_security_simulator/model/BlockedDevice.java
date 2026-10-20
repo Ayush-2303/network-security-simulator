@@ -14,9 +14,12 @@ public class BlockedDevice {
     private String severity;
     private LocalDateTime blockedAt;
 
-    public BlockedDevice() { }
+    public BlockedDevice() { };
     public BlockedDevice(String deviceId, String reason, String severity, LocalDateTime blockedAt) {
-        this.deviceId = deviceId; this.reason = reason; this.severity = severity; this.blockedAt = blockedAt;
+        this.deviceId = deviceId;
+        this.reason = reason;
+        this.severity = severity;
+        this.blockedAt = blockedAt;
     }
     public String getDeviceId() { return deviceId; }
     public String getReason() { return reason; }

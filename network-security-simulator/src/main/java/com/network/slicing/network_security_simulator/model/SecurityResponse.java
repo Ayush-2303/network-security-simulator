@@ -6,7 +6,7 @@ public class SecurityResponse {
     private String action;
     private String reason;
     private String severity;
-
+    public SecurityResponse() {};
     public SecurityResponse(
             String deviceId,
             String action,

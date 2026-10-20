@@ -41,7 +41,7 @@ public class TrafficLog {
     private LocalDateTime timestamp;
 
     public TrafficLog() {
-    }
+    };
 
     public TrafficLog(String deviceId, int bandwidthUsed,
                       double latencyMs, int packetCount,

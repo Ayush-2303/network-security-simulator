@@ -17,9 +17,13 @@ public class SecurityEvent {
     private String reason;
     private String severity;
     private LocalDateTime createdAt;
-    public SecurityEvent() { }
+    public SecurityEvent() { };
     public SecurityEvent(String deviceId, String action, String reason, String severity, LocalDateTime createdAt) {
-        this.deviceId = deviceId; this.action = action; this.reason = reason; this.severity = severity; this.createdAt = createdAt;
+        this.deviceId = deviceId;
+        this.action = action;
+        this.reason = reason;
+        this.severity = severity;
+        this.createdAt = createdAt;
     }
     public Long getId() { return id; }
     public String getDeviceId() { return deviceId; }
